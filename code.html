@@ -1,73 +1,706 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Image Screensaver</title>
-<style>
-body{
-    margin:0;
-    background:black;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    height:100vh;
-    overflow:hidden;
-    color:white;
-    font-family:Arial;
-}
-
-img{
-    max-width:100%;
-    max-height:100%;
-    object-fit:contain;
-}
-
-#controls{
-    position:fixed;
-    top:10px;
-    left:10px;
-    background:rgba(0,0,0,0.6);
-    padding:10px;
-    border-radius:8px;
-}
-</style>
-</head>
-
-<body>
-
-<div id="controls">
-<input type="file" id="files" multiple accept="image/*">
-<button onclick="start()">Start Slideshow</button>
-<label>Seconds per image:</label>
-<input type="number" id="delay" value="3" min="1" style="width:50px">
-</div>
-
-<img id="viewer">
-
-<script>
-let images=[];
-let index=0;
-let timer=null;
-
-document.getElementById("files").addEventListener("change",function(e){
-    images=[];
-    for(let file of e.target.files){
-        images.push(URL.createObjectURL(file));
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your Name | Applied Math & Physics Portfolio</title>
+  <meta name="description" content="Portfolio website for an applied mathematics and physics undergraduate student." />
+  <style>
+    :root {
+      --bg: #0b1020;
+      --bg-soft: #121933;
+      --card: rgba(255, 255, 255, 0.06);
+      --text: #eef2ff;
+      --muted: #b7c0e0;
+      --accent: #7dd3fc;
+      --accent-2: #c084fc;
+      --border: rgba(255, 255, 255, 0.12);
+      --shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+      --max: 1150px;
     }
-});
 
-function start(){
-    if(images.length===0)return;
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-    let delay=document.getElementById("delay").value*1000;
+    html {
+      scroll-behavior: smooth;
+    }
 
-    document.getElementById("viewer").src=images[0];
+    body {
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(125, 211, 252, 0.16), transparent 32%),
+        radial-gradient(circle at top right, rgba(192, 132, 252, 0.14), transparent 28%),
+        linear-gradient(180deg, #09101f 0%, #0f172a 100%);
+      color: var(--text);
+      line-height: 1.65;
+    }
 
-    timer=setInterval(()=>{
-        index=(index+1)%images.length;
-        document.getElementById("viewer").src=images[index];
-    },delay);
-}
-</script>
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
 
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    .container {
+      width: min(92%, var(--max));
+      margin: 0 auto;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      backdrop-filter: blur(16px);
+      background: rgba(9, 16, 31, 0.72);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 0;
+      gap: 1rem;
+    }
+
+    .brand {
+      font-size: 1.1rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+    }
+
+    .brand span {
+      color: var(--accent);
+    }
+
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      list-style: none;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+    }
+
+    .hero {
+      padding: 5.5rem 0 4rem;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      font-size: 0.85rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      font-weight: 700;
+    }
+
+    h1 {
+      font-size: clamp(2.5rem, 5vw, 4.75rem);
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      margin-bottom: 1rem;
+    }
+
+    .hero p {
+      color: var(--muted);
+      max-width: 62ch;
+      font-size: 1.05rem;
+      margin-bottom: 1.6rem;
+    }
+
+    .cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.9rem;
+      margin-bottom: 1.8rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      padding: 0.9rem 1.25rem;
+      border: 1px solid var(--border);
+      font-weight: 700;
+      transition: 0.2s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #07111f;
+      border: none;
+      box-shadow: var(--shadow);
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+    }
+
+    .hero-card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.09), rgba(255,255,255,0.04));
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+    }
+
+    .profile {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .profile-photo {
+      aspect-ratio: 1 / 1;
+      border-radius: 22px;
+      background:
+        radial-gradient(circle at 30% 20%, rgba(125, 211, 252, 0.32), transparent 25%),
+        radial-gradient(circle at 70% 30%, rgba(192, 132, 252, 0.28), transparent 25%),
+        linear-gradient(135deg, #172554, #111827);
+      border: 1px solid rgba(255,255,255,0.12);
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      text-align: center;
+      padding: 1.25rem;
+      font-weight: 700;
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.85rem;
+    }
+
+    .stat {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 18px;
+      padding: 1rem;
+    }
+
+    .stat h3 {
+      font-size: 1.6rem;
+      margin-bottom: 0.2rem;
+    }
+
+    .stat p {
+      font-size: 0.92rem;
+      color: var(--muted);
+      margin: 0;
+    }
+
+    section {
+      padding: 2.75rem 0;
+    }
+
+    .section-header {
+      margin-bottom: 1.4rem;
+    }
+
+    .section-header h2 {
+      font-size: clamp(1.7rem, 3vw, 2.4rem);
+      margin-bottom: 0.4rem;
+    }
+
+    .section-header p {
+      color: var(--muted);
+      max-width: 70ch;
+    }
+
+    .grid-2, .grid-3 {
+      display: grid;
+      gap: 1.2rem;
+    }
+
+    .grid-2 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .grid-3 {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 1.35rem;
+      box-shadow: var(--shadow);
+    }
+
+    .card h3 {
+      font-size: 1.15rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .meta {
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 0.92rem;
+      margin-bottom: 0.6rem;
+    }
+
+    .card p,
+    .card li {
+      color: var(--muted);
+    }
+
+    .card ul {
+      padding-left: 1.2rem;
+      margin-top: 0.8rem;
+      display: grid;
+      gap: 0.45rem;
+    }
+
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-top: 0.9rem;
+    }
+
+    .tag {
+      padding: 0.45rem 0.75rem;
+      border-radius: 999px;
+      background: rgba(125, 211, 252, 0.10);
+      border: 1px solid rgba(125, 211, 252, 0.20);
+      color: #d9f3ff;
+      font-size: 0.9rem;
+    }
+
+    .timeline {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .timeline .card {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .timeline .card::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 5px;
+      height: 100%;
+      background: linear-gradient(180deg, var(--accent), var(--accent-2));
+    }
+
+    .highlight {
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    .footer {
+      padding: 2.8rem 0 3.2rem;
+      color: var(--muted);
+      text-align: center;
+      font-size: 0.95rem;
+    }
+
+    .contact-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      margin-top: 1rem;
+    }
+
+    .contact-links a {
+      border: 1px solid var(--border);
+      padding: 0.7rem 1rem;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.04);
+    }
+
+    .contact-links a:hover {
+      color: var(--text);
+      border-color: rgba(125, 211, 252, 0.45);
+    }
+
+    @media (max-width: 940px) {
+      .hero-grid,
+      .grid-2,
+      .grid-3 {
+        grid-template-columns: 1fr;
+      }
+
+      .nav {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .hero {
+        padding-top: 4rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="container nav">
+      <a href="#home" class="brand">Your<span>Name</span></a>
+      <ul class="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#research">Research</a></li>
+        <li><a href="#experience">Experience</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#leadership">Leadership</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <main id="home">
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <div class="eyebrow">Applied Mathematics • Physics • Research</div>
+          <h1>Building models, solving problems, and exploring the mathematics behind the physical world.</h1>
+          <p>
+            I’m an applied math and physics undergraduate interested in mathematical modeling, computational methods,
+            scientific computing, and research at the intersection of theory and real-world systems. This site highlights
+            my research papers, internships, technical projects, coursework, and leadership experience.
+          </p>
+          <div class="cta-row">
+            <a class="btn btn-primary" href="#projects">View My Work</a>
+            <a class="btn btn-secondary" href="#contact">Get in Touch</a>
+          </div>
+          <div class="tag-list">
+            <span class="tag">Mathematical Modeling</span>
+            <span class="tag">Computational Physics</span>
+            <span class="tag">Scientific Python</span>
+            <span class="tag">Data Analysis</span>
+            <span class="tag">Research Writing</span>
+          </div>
+        </div>
+
+        <aside class="hero-card">
+          <div class="profile">
+            <div class="profile-photo">
+              Replace this box with your headshot,<br />name, university, or personal logo.
+            </div>
+            <div class="stat-grid">
+              <div class="stat">
+                <h3>3+</h3>
+                <p>Research papers or technical writeups</p>
+              </div>
+              <div class="stat">
+                <h3>2+</h3>
+                <p>Internships or research experiences</p>
+              </div>
+              <div class="stat">
+                <h3>8+</h3>
+                <p>Projects in math, physics, or computation</p>
+              </div>
+              <div class="stat">
+                <h3>5+</h3>
+                <p>Leadership and club initiatives</p>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="about">
+      <div class="container">
+        <div class="section-header">
+          <h2>About Me</h2>
+          <p>
+            Use this section to introduce your academic interests, long-term goals, and what kinds of problems excite you.
+            You can also mention your university, year, GPA if desired, and any specific fields such as fluid dynamics,
+            optimization, machine learning, condensed matter, astrophysics, or numerical PDEs.
+          </p>
+        </div>
+        <div class="grid-2">
+          <article class="card">
+            <h3>Academic Focus</h3>
+            <p>
+              I study applied mathematics and physics with a strong interest in using quantitative tools to understand
+              complex systems. My coursework and projects have centered on differential equations, linear algebra,
+              classical mechanics, electromagnetism, numerical methods, and computation.
+            </p>
+          </article>
+          <article class="card">
+            <h3>What I’m Looking For</h3>
+            <p>
+              I’m currently seeking opportunities in research, quantitative internships, and technical teams where I can
+              contribute analytical thinking, programming ability, and strong scientific communication.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="research">
+      <div class="container">
+        <div class="section-header">
+          <h2>Research & Papers</h2>
+          <p>
+            Highlight your strongest academic work here. Link to papers, posters, arXiv pages, GitHub repositories,
+            notebooks, or presentations.
+          </p>
+        </div>
+        <div class="grid-3">
+          <article class="card">
+            <div class="meta">Research Paper • 2026</div>
+            <h3>Numerical Modeling of Wave Propagation in Complex Media</h3>
+            <p>
+              Summarize the question, your methods, and your contribution in 2–3 sentences. Mention any simulation,
+              derivation, or data analysis you performed.
+            </p>
+            <div class="tag-list">
+              <span class="tag">PDEs</span>
+              <span class="tag">Simulation</span>
+              <span class="tag">Python</span>
+            </div>
+          </article>
+          <article class="card">
+            <div class="meta">Conference Poster • 2025</div>
+            <h3>Computational Study of Dynamical Systems</h3>
+            <p>
+              Describe the system you studied, the mathematical framework you used, and the main result or insight.
+            </p>
+            <div class="tag-list">
+              <span class="tag">ODEs</span>
+              <span class="tag">Nonlinear Systems</span>
+              <span class="tag">Visualization</span>
+            </div>
+          </article>
+          <article class="card">
+            <div class="meta">Independent Paper • 2025</div>
+            <h3>Data-Driven Analysis of Physical Phenomena</h3>
+            <p>
+              Use this card for a term paper, expository article, literature review, or technical essay that shows both
+              depth and clarity.
+            </p>
+            <div class="tag-list">
+              <span class="tag">Scientific Writing</span>
+              <span class="tag">Literature Review</span>
+              <span class="tag">Analysis</span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="experience">
+      <div class="container">
+        <div class="section-header">
+          <h2>Internships & Experience</h2>
+          <p>
+            Show how you applied your skills in labs, internships, or campus positions.
+          </p>
+        </div>
+        <div class="timeline">
+          <article class="card">
+            <div class="meta">Summer 2026</div>
+            <h3>Research Intern — Lab or Organization Name</h3>
+            <p>
+              Worked on <span class="highlight">computational modeling, data analysis, or experimental support</span>
+              for a project in physics, engineering, or applied math.
+            </p>
+            <ul>
+              <li>Built or improved a simulation, analysis pipeline, or mathematical model.</li>
+              <li>Presented findings to mentors, lab members, or a student research symposium.</li>
+              <li>Collaborated across technical and non-technical teams.</li>
+            </ul>
+          </article>
+          <article class="card">
+            <div class="meta">2025–2026</div>
+            <h3>Teaching Assistant / Tutor / Grader</h3>
+            <p>
+              Supported students in mathematics, physics, or programming by explaining difficult concepts clearly and
+              helping them develop stronger problem-solving habits.
+            </p>
+          </article>
+          <article class="card">
+            <div class="meta">Summer 2025</div>
+            <h3>Technical Intern — Company or Team Name</h3>
+            <p>
+              Add details on what you built, analyzed, or optimized. Quantify impact where possible.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="projects">
+      <div class="container">
+        <div class="section-header">
+          <h2>Projects</h2>
+          <p>
+            These can include course projects, research tools, simulations, data visualizations, engineering builds,
+            or software for scientific workflows.
+          </p>
+        </div>
+        <div class="grid-3">
+          <article class="card">
+            <h3>Physics Simulation Engine</h3>
+            <p>
+              A project modeling a physical process such as orbital mechanics, heat diffusion, or pendulum dynamics.
+            </p>
+            <ul>
+              <li>Implemented numerical integration or finite-difference methods.</li>
+              <li>Compared simulation results with theory or benchmark data.</li>
+            </ul>
+          </article>
+          <article class="card">
+            <h3>Mathematical Modeling Project</h3>
+            <p>
+              Built a model to study a real system, then analyzed assumptions, sensitivity, and predictive behavior.
+            </p>
+            <ul>
+              <li>Used differential equations, optimization, or probability tools.</li>
+              <li>Created visualizations to explain results clearly.</li>
+            </ul>
+          </article>
+          <article class="card">
+            <h3>Scientific Computing Toolkit</h3>
+            <p>
+              A practical codebase for automating calculations, analyzing datasets, or generating publication-ready plots.
+            </p>
+            <ul>
+              <li>Written in Python, MATLAB, Julia, or C++.</li>
+              <li>Focused on reproducibility and clean documentation.</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="leadership">
+      <div class="container">
+        <div class="section-header">
+          <h2>Leadership & Clubs</h2>
+          <p>
+            Show initiative, teamwork, and communication through student organizations, outreach, mentoring, or event planning.
+          </p>
+        </div>
+        <div class="grid-2">
+          <article class="card">
+            <div class="meta">Club Leadership</div>
+            <h3>Math / Physics / Engineering Club</h3>
+            <p>
+              Include your role, what events you organized, and how you helped build community or increase participation.
+            </p>
+          </article>
+          <article class="card">
+            <div class="meta">Outreach</div>
+            <h3>STEM Mentoring, Workshops, or Competitions</h3>
+            <p>
+              Mention mentoring younger students, leading review sessions, organizing competitions, or building educational resources.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="skills">
+      <div class="container">
+        <div class="section-header">
+          <h2>Skills</h2>
+          <p>
+            Group your skills so they are easy to scan quickly.
+          </p>
+        </div>
+        <div class="grid-3">
+          <article class="card">
+            <h3>Programming</h3>
+            <div class="tag-list">
+              <span class="tag">Python</span>
+              <span class="tag">MATLAB</span>
+              <span class="tag">Julia</span>
+              <span class="tag">C++</span>
+              <span class="tag">LaTeX</span>
+              <span class="tag">Git</span>
+            </div>
+          </article>
+          <article class="card">
+            <h3>Mathematics & Physics</h3>
+            <div class="tag-list">
+              <span class="tag">ODEs/PDEs</span>
+              <span class="tag">Linear Algebra</span>
+              <span class="tag">Probability</span>
+              <span class="tag">Mechanics</span>
+              <span class="tag">E&amp;M</span>
+              <span class="tag">Numerical Methods</span>
+            </div>
+          </article>
+          <article class="card">
+            <h3>Tools</h3>
+            <div class="tag-list">
+              <span class="tag">NumPy</span>
+              <span class="tag">SciPy</span>
+              <span class="tag">Pandas</span>
+              <span class="tag">Matplotlib</span>
+              <span class="tag">Jupyter</span>
+              <span class="tag">Linux</span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact">
+      <div class="container">
+        <div class="section-header">
+          <h2>Contact</h2>
+          <p>
+            Replace these links with your actual information.
+          </p>
+        </div>
+        <article class="card">
+          <h3>Let’s Connect</h3>
+          <p>
+            I’m always happy to talk about research, internships, collaboration, and opportunities in applied mathematics,
+            physics, scientific computing, and quantitative problem-solving.
+          </p>
+          <div class="contact-links">
+            <a href="mailto:yourname@email.com">Email</a>
+            <a href="https://github.com/yourusername" target="_blank" rel="noopener">GitHub</a>
+            <a href="https://www.linkedin.com/in/yourusername" target="_blank" rel="noopener">LinkedIn</a>
+            <a href="#">CV / Resume</a>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>© 2026 Your Name • Applied Mathematics & Physics Portfolio</p>
+    </div>
+  </footer>
 </body>
 </html>
